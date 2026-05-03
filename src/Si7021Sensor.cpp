@@ -1,16 +1,10 @@
 #include <Arduino.h>
-
 #include <Wire.h>
 
 #define SENSOR_ADDR 0x40
 
-void setup() {
-  Serial.begin(115200);
-  Wire.begin();
-  Serial.println("Тест HTU21D/Si7021 на GY-21");
-}
-
 float readHTU21D_Humidity() {
+  Wire.begin();
   Wire.beginTransmission(SENSOR_ADDR);
   Wire.write(0xE5);  // КОМАНДА HTU21D для влажности
   Wire.endTransmission();
@@ -34,6 +28,7 @@ float readHTU21D_Humidity() {
 }
 
 float readHTU21D_Temperature() {
+  Wire.begin();
   Wire.beginTransmission(SENSOR_ADDR);
   Wire.write(0xE3);  // КОМАНДА HTU21D для температуры
   Wire.endTransmission();
@@ -52,21 +47,4 @@ float readHTU21D_Temperature() {
   float temperature = -46.85 + 175.72 * raw / 65536.0;
   
   return temperature;
-}
-
-void loop() {
-  float temp = readHTU21D_Temperature();
-  float hum = readHTU21D_Humidity();
-  
-  if (temp != -999 && hum != -999) {
-    Serial.print("Температура: ");
-    Serial.print(temp);
-    Serial.print(" °C, Влажность: ");
-    Serial.print(hum);
-    Serial.println(" %");
-  } else {
-    Serial.println("Ошибка чтения");
-  }
-  
-  delay(2000);
 }
